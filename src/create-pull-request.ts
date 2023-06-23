@@ -12,6 +12,7 @@ import * as utils from './utils'
 export interface Inputs {
   token: string
   path: string
+  addOptions: string[]
   addPaths: string[]
   commitMessage: string
   committer: string
@@ -199,7 +200,8 @@ export async function createPullRequest(inputs: Inputs): Promise<void> {
       inputs.branch,
       branchRemoteName,
       inputs.signoff,
-      inputs.addPaths
+      inputs.addPaths,
+      inputs.addOptions
     )
     core.endGroup()
 

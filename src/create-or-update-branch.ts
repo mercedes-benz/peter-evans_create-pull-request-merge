@@ -120,7 +120,8 @@ export async function createOrUpdateBranch(
   branch: string,
   branchRemoteName: string,
   signoff: boolean,
-  addPaths: string[]
+  addPaths: string[],
+  addOptions: string[]
 ): Promise<CreateOrUpdateBranchResult> {
   // Get the working base.
   // When a ref, it may or may not be the actual base.
@@ -150,6 +151,12 @@ export async function createOrUpdateBranch(
   if (await git.isDirty(true, addPaths)) {
     core.info('Uncommitted changes found. Adding a commit.')
     const aopts = ['add']
+    if (addOptions.length > 0) {
+      core.info('Adding git add options.')
+      for (const ao of addOptions) {
+        aopts.push(ao)
+      }
+    }
     if (addPaths.length > 0) {
       aopts.push(...['--', ...addPaths])
     } else {
