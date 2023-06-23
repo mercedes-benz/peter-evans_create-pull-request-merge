@@ -8,6 +8,11 @@ inputs:
     description: >
       Relative path under $GITHUB_WORKSPACE to the repository.
       Defaults to $GITHUB_WORKSPACE.
+  add-options:
+    description: >
+      A comma or newline-separated list of options to add to the `git add` command.
+      e.g. `--force`
+      Defaults to use no additional options.
   add-paths:
     description: >
       A comma or newline-separated list of file paths to commit.
