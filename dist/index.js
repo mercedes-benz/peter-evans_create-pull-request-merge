@@ -117,7 +117,7 @@ function splitLines(multilineString) {
         .map(s => s.trim())
         .filter(x => x !== '');
 }
-function createOrUpdateBranch(git, commitMessage, base, branch, branchRemoteName, signoff, addPaths) {
+function createOrUpdateBranch(git, commitMessage, base, branch, branchRemoteName, signoff, addPaths, addOptions) {
     return __awaiter(this, void 0, void 0, function* () {
         // Get the working base.
         // When a ref, it may or may not be the actual base.
@@ -144,6 +144,12 @@ function createOrUpdateBranch(git, commitMessage, base, branch, branchRemoteName
         if (yield git.isDirty(true, addPaths)) {
             core.info('Uncommitted changes found. Adding a commit.');
             const aopts = ['add'];
+            if (addOptions.length > 0) {
+                core.info('Adding git add options.');
+                for (const ao of addOptions) {
+                    aopts.push(ao);
+                }
+            }
             if (addPaths.length > 0) {
                 aopts.push(...['--', ...addPaths]);
             }
@@ -444,7 +450,7 @@ function createPullRequest(inputs) {
             core.endGroup();
             // Create or update the pull request branch
             core.startGroup('Create or update the pull request branch');
-            const result = yield (0, create_or_update_branch_1.createOrUpdateBranch)(git, inputs.commitMessage, inputs.base, inputs.branch, branchRemoteName, inputs.signoff, inputs.addPaths);
+            const result = yield (0, create_or_update_branch_1.createOrUpdateBranch)(git, inputs.commitMessage, inputs.base, inputs.branch, branchRemoteName, inputs.signoff, inputs.addPaths, inputs.addOptions);
             core.endGroup();
             if (['created', 'updated'].includes(result.action)) {
                 // The branch was created or updated
@@ -1207,6 +1213,7 @@ function run() {
             const inputs = {
                 token: core.getInput('token'),
                 path: core.getInput('path'),
+                addOptions: utils.getInputAsArray('add-options'),
                 addPaths: utils.getInputAsArray('add-paths'),
                 commitMessage: core.getInput('commit-message'),
                 committer: core.getInput('committer'),
